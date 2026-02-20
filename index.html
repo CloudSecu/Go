@@ -75,13 +75,20 @@ async function decrypt() {
 
         const payload = JSON.parse(new TextDecoder().decode(decrypted));
 
-        // 🔥 Redirection complète
-        window.location.replace(payload.url);
+        // 🔥 On charge le contenu de la page
+        const response = await fetch(payload.url);
+        const html = await response.text();
+
+        // 🔥 On remplace complètement le document
+        document.open();
+        document.write(html);
+        document.close();
 
     } catch (e) {
         alert("Mot de passe incorrect");
     }
 }
+
 </script>
 
 </body>
