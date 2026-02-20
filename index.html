@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Accès sécurisé</title>
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    margin-top: 100px;
+}
+</style>
 </head>
 <body>
 
@@ -12,11 +19,8 @@
 <br><br>
 <button onclick="decrypt()">Déverrouiller</button>
 
-<div id="content"></div>
-
 <script>
 
-// 🔐 Base de données locale des liens chiffrés
 const encryptedLinks = {
     "Aj8U": "VaMNaUp6RqNF6aIOR1oc1sjyA6qmj3bTmOkraMZvAgHQbEZZXl3kxG7hS3IUhXDspsAzydapF7oxMcQaxUoX3TCxVyaWrBtb9V6ZtGDjKzXeuB6TEjr6OlXsnC+yaQuoRG/nLtY2MYUWMaSEetxrHvDzliFAf8rW4ZBPWvIdwxh5JIXlz5AE264vN3rEzA4C+HCmS/P6sg=="
 };
@@ -24,9 +28,8 @@ const encryptedLinks = {
 async function decrypt() {
 
     const id = location.hash.substring(1);
-
     if (!encryptedLinks[id]) {
-        alert("Lien invalide.");
+        alert("Lien invalide");
         return;
     }
 
@@ -34,6 +37,7 @@ async function decrypt() {
     const password = document.getElementById("password").value;
 
     try {
+
         const data = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
         const salt = data.slice(0, 16);
         const iv = data.slice(16, 28);
@@ -58,7 +62,7 @@ async function decrypt() {
             },
             keyMaterial,
             { name: "AES-GCM", length: 256 },
-            true,
+            false,
             ["decrypt"]
         );
 
@@ -70,11 +74,11 @@ async function decrypt() {
 
         const payload = JSON.parse(new TextDecoder().decode(decrypted));
 
-        document.getElementById("content").innerHTML =
-            `<iframe src="${payload.url}" width="100%" height="600px"></iframe>`;
+        // 🔥 Redirection complète
+        window.location.replace(payload.url);
 
     } catch (e) {
-        alert("Mot de passe incorrect.");
+        alert("Mot de passe incorrect");
     }
 }
 </script>
